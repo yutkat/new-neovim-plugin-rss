@@ -13,3 +13,4 @@ if [[ -e /tmp/repo.3.txt ]]; then
 	rm /tmp/repo3.txt
 fi
 cat /tmp/repo2.txt | xargs -i bash -c "gh api user/starred/{} >/dev/null 2>&1 || echo {} >> /tmp/repo3.txt"
+cat /tmp/repo3.txt
