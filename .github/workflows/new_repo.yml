@@ -44,3 +44,6 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v4.2.0
         with:
           commit_message: Add new neovim repos
+  call-workflow:
+      needs: [build]
+      uses: ./.github/workflows/pages.yml
