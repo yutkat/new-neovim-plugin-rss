@@ -7,7 +7,7 @@ on:
     branches: ["main"]
   workflow_run:
     workflows:
-      - new_repo
+      - Create new post
     branches:
       - main
     types:
