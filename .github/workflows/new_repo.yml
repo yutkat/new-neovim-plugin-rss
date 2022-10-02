@@ -37,3 +37,10 @@ jobs:
           ./scripts/get_new_repos.sh
         env:
           GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      - name: Create new blog posts
+        run: |
+          ./scripts/create_post.sh
+      - name: Auto commit
+        uses: stefanzweifel/git-auto-commit-action@v4.2.0
+        with:
+          commit_message: Add new neovim repos
