@@ -19,6 +19,10 @@ for r in "${REPOS[@]}"; do
 	repo=${r//--/\/}
 	touch ./_posts/$DATE-$r.html
 	tee ./_posts/$DATE-$r.html <<EOF >/dev/null
+---
+layout: default
+title: $repo
+---
 <!DOCTYPE html>
 <html>
   <head>
