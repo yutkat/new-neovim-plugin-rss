@@ -8,13 +8,14 @@ cat /tmp/repo.json | jq -r '.items[] | select(.full_name | test("/nvim-") or end
   select(.full_name | test("/nvim-config") or
     test("/nvim-conf") or
     endswith("/nvim") or
+    endswith("/nvim-setup") or
     endswith("/nvim-lua") or
     endswith("/.nvim") or
     test("theme") or test("dotfiles") | not) |
   select(.language != "Vim Script") |
   select(contains({description: "colorscheme"}) or contains({description: "config"}) | not) |
   select(.topics | index("neovim-colorscheme") or index("neovim-theme") or index("colorscheme") or index("dotfiles") | not)
-  .full_name' >/tmp/repo2.txt
+.full_name' >/tmp/repo2.txt
 if [[ -e /tmp/repo.3.txt ]]; then
 	rm /tmp/repo3.txt
 fi
