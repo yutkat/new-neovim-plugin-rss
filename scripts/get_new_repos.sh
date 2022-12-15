@@ -7,6 +7,10 @@ gh api --method=GET search/repositories -f q="nvim created:${date_range_from}..$
 cat /tmp/repo.json | jq -r '.items[] | select(.full_name | test("/nvim-") or endswith(".nvim")) |
   select(.full_name | test("/nvim-config") or
     test("/nvim-conf") or
+    test("/nvim-ide") or
+    test("/nvim-basic-ide") or
+    test("/nvim-ide-basic") or
+    test("/nvim-from-scratch") or
     endswith("/nvim") or
     endswith("/nvim-setup") or
     endswith("/nvim-lua") or
