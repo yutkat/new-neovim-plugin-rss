@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -ue
 
-date_range_from=$(date --date="5 day ago" +"%Y-%m-%d")
+date_range_from=$(date --date="3 day ago" +"%Y-%m-%d")
 date_range_to=$(date --date="2 day ago" +"%Y-%m-%d")
-gh api --method=GET search/repositories -f q="nvim created:${date_range_from}..${date_range_to} sort:updated" -f per_page=100 >/tmp/repo.json
+gh api --method=GET search/repositories -f q="nvim in:name size:>1 template:false archived:false created:${date_range_from}..${date_range_to} sort:updated" -f per_page=100 >/tmp/repo.json
 cat /tmp/repo.json | jq -r '.items[] | select(.full_name | test("/nvim-") or endswith(".nvim")) |
   select(.full_name | test("/nvim-config") or
     test("/nvim-conf") or
