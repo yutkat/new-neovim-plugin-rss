@@ -7,6 +7,8 @@ gh api --method=GET search/repositories -f q="nvim in:name size:>1 template:fals
 cat /tmp/repo.json | jq -r '.items[] | select(.full_name | test("/nvim-") or endswith(".nvim")) |
   select(.full_name | test("/nvim-config") or
     test("/nvim-conf") or
+    test("/nvim-cfg") or
+    test("/nvim-settings") or
     test("/nvim-ide") or
     test("/nvim-basic-ide") or
     test("/nvim-ide-basic") or
