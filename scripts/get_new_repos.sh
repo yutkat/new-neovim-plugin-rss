@@ -27,10 +27,12 @@ cat /tmp/repo.json | jq -r '.items[] | select(.full_name | test("/nvim-") or end
 			endswith("/nvim-setup") or
 			endswith("/nvim-lua") or
 			endswith("/.nvim") or
+			endswith("/nvim-lazy") or
 			test("theme") or
 			test("dotfiles") or
 			contains("dots") or
 			contains("init") | not) |
+		select(.size != 0) |
 		select(.language != "Vim Script") |
 		select(contains({description: "colorscheme"}) or contains({description: "config"}) | not) |
 		select(.topics | index("neovim-colorscheme") or index("neovim-theme") or index("colorscheme") or index("dotfiles") | not)
