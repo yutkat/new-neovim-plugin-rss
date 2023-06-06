@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 set -ue
 
-if [[ ! -e /tmp/repo3.txt ]]; then
+if [[ ! -e /tmp/new_repos.txt ]]; then
 	exit 0
 fi
 
-if [[ $(wc -l </tmp/repo3.txt) -eq 0 ]]; then
+if [[ $(wc -l </tmp/new_repos.txt) -eq 0 ]]; then
 	exit 0
 fi
 
-REPOS=($(cat /tmp/repo3.txt | sed 's#/#--#g'))
+REPOS=($(cat /tmp/new_repos.txt | sed 's#/#--#g'))
 DATE=$(date +"%Y-%m-%d")
 
 for r in "${REPOS[@]}"; do

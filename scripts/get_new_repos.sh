@@ -37,8 +37,8 @@ cat /tmp/repo.json | jq -r '.items[] | select(.full_name | test("/nvim-") or end
 		select(contains({description: "colorscheme"}) or contains({description: "config"}) | not) |
 		select(.topics | index("neovim-colorscheme") or index("neovim-theme") or index("colorscheme") or index("dotfiles") | not)
 .full_name' >/tmp/repo2.txt
-if [[ -e /tmp/repo.3.txt ]]; then
-	rm /tmp/repo3.txt
-fi
-cat /tmp/repo2.txt | xargs -i bash -c "gh api user/starred/{} >/dev/null 2>&1 || echo {} >> /tmp/repo3.txt"
-cat /tmp/repo3.txt
+
+cat /tmp/repo2.txt | xargs -i bash -c "gh api /user/starred/{} >/dev/null 2>&1 || echo {}" > /tmp/repo3.txt
+cat /tmp/repo3.txt | xargs -i bash -c "gh api /repos/{}/readme >/dev/null 2>&1 && echo {} || true" > /tmp/repo4.txt
+cat /tmp/repo4.txt | xargs -i bash -c "gh api /repos/{}/contents/init.lua >/dev/null 2>&1 || echo {}" > /tmp/new_repos.txt
+cat /tmp/new_repos.txt
