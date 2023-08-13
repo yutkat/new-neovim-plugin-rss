@@ -4,16 +4,16 @@ set -ue
 date_range_from=$(date --date="3 day ago" +"%Y-%m-%d")
 date_range_to=$(date --date="2 day ago" +"%Y-%m-%d")
 
-if [[ -e /tmp/repo.json  ]]; then
-	rm /tmp/repo.json
+if [[ -e /tmp/repo.json ]]; then
+  rm /tmp/repo.json
 fi
 
 page=1
-while : ; do
-	result=$(gh api --method=GET search/repositories -f q="nvim created:${date_range_from}..${date_range_to} sort:updated" -f per_page=100 -f page=$page | tee -a /tmp/repo.json)
-	page=$((page + 1))
-	items=$(echo $result | jq -r '.items[]')
-	[ -z "$items" ] && break
+while :; do
+  result=$(gh api --method=GET search/repositories -f q="nvim created:${date_range_from}..${date_range_to} sort:updated" -f per_page=100 -f page=$page | tee -a /tmp/repo.json)
+  page=$((page + 1))
+  items=$(echo $result | jq -r '.items[]')
+  [ -z "$items" ] && break
 done
 
 cat /tmp/repo.json | jq -r '.items[] | select(.full_name | test("/nvim-") or endswith(".nvim")) |
@@ -36,9 +36,11 @@ cat /tmp/repo.json | jq -r '.items[] | select(.full_name | test("/nvim-") or end
 		select(.language != "Vim Script") |
 		select(contains({description: "colorscheme"}) or contains({description: "config"}) | not) |
 		select(.topics | index("neovim-colorscheme") or index("neovim-theme") or index("colorscheme") or index("dotfiles") | not)
-.full_name' >/tmp/repo2.txt
+.full_name' > /tmp/repo2.txt
 
 cat /tmp/repo2.txt | xargs -i bash -c "gh api /user/starred/{} >/dev/null 2>&1 || echo {}" > /tmp/repo3.txt
 cat /tmp/repo3.txt | xargs -i bash -c "gh api /repos/{}/readme >/dev/null 2>&1 && echo {} || true" > /tmp/repo4.txt
-cat /tmp/repo4.txt | xargs -i bash -c "gh api /repos/{}/contents/init.lua >/dev/null 2>&1 || echo {}" > /tmp/new_repos.txt
+cat /tmp/repo4.txt | xargs -i bash -c "gh api /repos/{}/contents/lua >/dev/null 2>&1 && echo {} || true" > /tmp/repo5.txt
+cat /tmp/repo4.txt | xargs -i bash -c "gh api /repos/{}/contents/plugin >/dev/null 2>&1 && echo {} || true" >> /tmp/repo5.txt
+cat /tmp/repo5.txt | xargs -i bash -c "gh api /repos/{}/contents/init.lua >/dev/null 2>&1 || echo {}" > /tmp/new_repos.txt
 cat /tmp/new_repos.txt
