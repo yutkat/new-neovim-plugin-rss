@@ -1,3 +1,6 @@
 plugins:
   - jekyll-feed
 title: New Neovim plugins
+
+feed:
+  posts_limit: 30
