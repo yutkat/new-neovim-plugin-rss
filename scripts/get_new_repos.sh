@@ -28,6 +28,7 @@ cat /tmp/repo.json | jq -r '.items[] | select(.full_name | test("/nvim-") or end
 			endswith("/nvim-lua") or
 			endswith("/.nvim") or
 			endswith("/nvim-lazy") or
+                        endswith("/stackmap.nvim") or
 			test("theme") or
 			test("dotfiles") or
 			contains("dots") or
