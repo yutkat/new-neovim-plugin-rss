@@ -44,6 +44,7 @@ cat /tmp/repo3.txt | xargs -i bash -c "gh api /repos/{}/readme >/dev/null 2>&1 &
 cat /tmp/repo4.txt | xargs -i bash -c "gh api /repos/{}/contents/lua >/dev/null 2>&1 && echo {} || true" > /tmp/repo5.txt
 cat /tmp/repo4.txt | xargs -i bash -c "gh api /repos/{}/contents/plugin >/dev/null 2>&1 && echo {} || true" >> /tmp/repo5.txt
 cat /tmp/repo5.txt | xargs -i bash -c "gh api /repos/{}/contents/lua/plugin_name.lua >/dev/null 2>&1 || echo {}" > /tmp/repo6.txt
-cat /tmp/repo6.txt | xargs -i bash -c "gh api repos/{}/contents/colors >/dev/null 2>&1 || echo {}" > /tmp/repo7.txt
-cat /tmp/repo7.txt | xargs -i bash -c "gh api /repos/{}/contents/init.lua >/dev/null 2>&1 || echo {}" > /tmp/new_repos.txt
+cat /tmp/repo6.txt | xargs -i bash -c "gh api /repos/{}/contents/colors >/dev/null 2>&1 || echo {}" > /tmp/repo7.txt
+cat /tmp/repo7.txt | xargs -i bash -c "gh api /repos/{}/contributors | jq -e 'length < 3' >/dev/null && echo {}" > /tmp/repo8.txt || true
+cat /tmp/repo8.txt | xargs -i bash -c "gh api /repos/{}/contents/init.lua >/dev/null 2>&1 || echo {}" > /tmp/new_repos.txt
 cat /tmp/new_repos.txt
