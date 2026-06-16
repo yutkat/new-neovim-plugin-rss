@@ -1,0 +1,19 @@
+name: Trigger plugin categorization
+
+on:
+  workflow_run:
+    workflows: ["Create new posts"]
+    types:
+      - completed
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    if: github.event.workflow_run.conclusion == 'success'
+    steps:
+      - name: Trigger auto-add-plugins
+        uses: peter-evans/repository-dispatch@v4
+        with:
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          repository: yutkat/my-neovim-pluginlist
+          event-type: new-rss-posts

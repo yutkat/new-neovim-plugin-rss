@@ -16,34 +16,33 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    # Expose whether the auto commit actually created a commit so that
+    # downstream jobs only run when new posts were added.
+    outputs:
+      changed: ${{ steps.auto_commit.outputs.changes_detected }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
-      - run: |
-          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
-          sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
-          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-          sudo apt update
-
-      # Runs a single command using the runners shell
-      - name: Install
-        run: sudo apt-get install -y ca-certificates jq gh
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          ./scripts/get_new_repos.sh
+      # gh, jq and curl are preinstalled on GitHub-hosted ubuntu runners,
+      # so no manual installation is required.
+      - name: Fetch new repos
+        run: ./scripts/get_new_repos.sh
         env:
           GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       - name: Create new blog posts
-        run: |
-          ./scripts/create_post.sh
+        run: ./scripts/create_post.sh
       - name: Auto commit
-        uses: stefanzweifel/git-auto-commit-action@v4.16.0
+        id: auto_commit
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: Add new neovim repos
+  # Do NOT remove this job. The auto commit above is pushed with the default
+  # GITHUB_TOKEN, and commits pushed with GITHUB_TOKEN do not trigger the
+  # push event in pages.yml. So Pages would never redeploy on new posts unless
+  # we invoke it explicitly here. Gated on `changed` to skip days with no new posts.
   call-workflow:
     needs: [build]
+    if: needs.build.outputs.changed == 'true'
     uses: ./.github/workflows/pages.yml
